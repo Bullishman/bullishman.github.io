@@ -32,6 +32,8 @@ share:
   fb_appid: 1749788565247320
 
 urls:
+    - text: Category
+      url: /category/Java
     - text: About Me
       url: /about/
     - text: My Projects
