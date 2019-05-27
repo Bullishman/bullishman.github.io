@@ -141,8 +141,7 @@ public class SelectionSort {
 }
 ```
 
-
-
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/1_ch2.png "Screenshot broadcast")   
 
 
 The first method, swapElements, swaps two elements of the array        
@@ -210,9 +209,11 @@ In general, we only care about the largest exponent of n. So if the total number
 
 In this context, an “order” is a group, like the Order of the Knights of the Round Table, which is a group of knights, not a way of lining them up. So you can imagine the Order of Linear Algorithms as a set of brave, chivalrous, and particularly efficient algorithms.             
 
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/2_ch2.png "Screenshot broadcast")   
 
+Big-O Complexity Chart: http://bigocheatsheet.com/       
 
-Big-O Complexity Chart: http://bigocheatsheet.com/  
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/3_ch2.png "Screenshot broadcast")   
 
 ** 2.2 Big O notation **   
 
@@ -555,3 +556,5 @@ Once you have your implementation working, compare it to mine, which you can rea
 		return element;
 	}
 ```
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/4_ch2.png "Screenshot broadcast")   
