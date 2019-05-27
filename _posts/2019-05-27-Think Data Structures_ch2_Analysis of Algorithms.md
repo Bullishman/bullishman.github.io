@@ -14,7 +14,7 @@ To decide which one is better for a particular application, one approach is to t
 
 2. The results might depend on what kind of computer you use. One algorithm might be better on one machine; the other might be better on a different machine.         
 
-# 3. The results might depend on the size of the problem or the data provided as input.       
+3. The results might depend on the size of the problem or the data provided as input.       
 
 
 特定のアプリケーションでどれが早いかを決定するための一つの方法で二つの方法を試みてからどれだけ時間がかかるのか見るのである。 この方法は,いわゆるprofilingと呼び,次の特徴を持つ。       
