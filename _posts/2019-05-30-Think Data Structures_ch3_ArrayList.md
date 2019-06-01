@@ -341,6 +341,31 @@ In this method, the loop runs once for each element in collection. If collection
 
 When we talk about problem size, we have to be careful about which size, or sizes, we are talking about. This example demonstrates a pitfall of algorithm analysis: the tempting shortcut of counting loops. If there is one loop, the algorithm is often linear. If there are two loops (one nested inside the other), the algorithm is often quadratic. But be careful! You have to think about how many times each loop runs. If the number of iterations is proportional to n for all loops, you can get away with just counting the loops. But if, as in this example, the number of iterations is not always proportional to n, you have to give it more thought.   
 
+&nbsp;
+&nbsp;
+
+3.3 Problem Size        
+
+```java
+	public boolean removeAll(Collection<?> collection) {
+		boolean flag = true;
+		for (Object obj: collection) {
+			flag &= remove(obj);
+		}
+		return flag;
+	}
+```     
+
+removeAllが実行されるたびに線形時間のremoveを呼び出す。 そのためにremoveAllが二次時間と考えられる可能性もある。 でも,いつもそうではない。        
+
+もし,collectionがm 要素を含み,削除しようとするlist がn 要素を含めるなら,このメソッドはO(nm)である。         
+そしてcollectionのサイズが定数時間であれば,removeAllは線形時間である。        
+しかし,collectionのサイズがnに比例すると,removeAllは二次時間である。        
+
+上記例は,アルゴリズム分析の潜在的危険を示す:繰り返し実行文を数える時,最も簡単な方法を試みることを。 一度の繰り返しの時は概ねアルゴリズムは線形の形であり、二度の繰り返しである時は普通二次形式である。 でも,上のようにいつもそうなのではないので,気をつけなければならない。        
+
+---
+
 3.4 Linked Data Structures     
 
 For the next exercise I provide a partial implementation of the List interface that uses a linked list to store the elements. If you are not familiar with linkedlists, you can read about them at http://thinkdast.com/linkedlist, but this section provides a brief introduction.        
@@ -348,3 +373,240 @@ For the next exercise I provide a partial implementation of the List interface t
 A data structure is “linked” if it is made up of objects, often called “nodes”, that contain references to other nodes. In a linked list, each node contains a reference to the next node in the list. Other linked structures include trees and graphs, in which nodes can contain references to more than one other node.      
 
 Here’s a class definition for a simple node:      
+
+```java
+public class ListNode {
+
+	public Object data;
+	public ListNode next;
+
+	public ListNode() {
+		this.data = null;
+		this.next = null;
+	}
+
+	public ListNode(Object data) {
+		this.data = data;
+		this.next = null;
+	}
+
+	public ListNode(Object data, ListNode next) {
+		this.data = data;
+		this.next = next;
+	}
+
+	public String toString() {
+		return "ListNode(" + data.toString() + ")";
+	}
+}
+```
+
+The ListNode object has two instance variables: data is a reference to some kind of Object, and next is a reference to the next node in the list. In the last node in the list, by convention, next is null.      
+
+You can think of each ListNode as a list with a single element, but more generally, a list can contain any number of nodes. There are several ways to make a new list. A simple option is to create a set of ListNode objects, like this:        
+
+ListNode node1 = new ListNode(1);         
+ListNode node2 = new ListNode(2);         
+ListNode node3 = new ListNode(3);        
+
+And then link them up, like this:        
+
+node1.next = node2;       
+node2.next = node3;        
+node3.next = null;          
+
+
+Alternatively, you can create a node and link it at the same time. For example, if you want to add a new node at the beginning of a list, you can do it like this:       
+
+ListNode node0 = new ListNode(0, node1);      
+
+After this sequence of instructions, we have four nodes containing the Integers 0, 1, 2, and 3 as data, linked up in increasing order. In the last node, the next field is null.    
+
+&nbsp;
+&nbsp;
+
+The ListNode オブジェクトは,二つのインスタンスの変数を有します:dataはObjectの一部に対する参照であり,nextはリスト内の次のノードに対する参照です。
+
+各リストNodeを単一の要素があるリストとすることができますが,一般的に,リストには任意の数のノードが含まれることがあります。 新しい目録を作る方法にはいろいろあります。 簡単なオプションは,以下のように一連のListNodeオブジェクトを作るものです。   
+
+ListNode node1 = new ListNode(1);    
+ListNode node2 = new ListNode(2);    
+ListNode node3 = new ListNode(3);     
+
+そして,次のように縛れる:     
+
+node1.next = node2;      
+node2.next = node3;      
+node3.next = null;     
+
+またはノードを作って同時に繋げることができます。 たとえば,リストスタート部分に新しいノードを追加するには,以下のようにすることができます。     
+
+ListNode node0=new ListNode(0、node1);     
+
+この命令シーケンス次に浄水0、1、2及び3をデータで含む4つのノードが増加順に連結されます。 最後のノードで次のフィールドはnullです。     
+
+---
+
+3.5 Exercise 3
+
+In the repository for this book, you’ll find the source files you need for this exercise:
+
+- MyLinkedList.java contains a partial implementation of the List interface using a linked list to store the elements.
+
+- MyLinkedListTest.java contains JUnit tests for MyLinkedList
+
+Run ant MyArrayList to run MyArrayList.java, which contains a few simple tests.
+
+Then you can run ant MyArrayListTest to run the JUnit tests. Several of them should fail. If you examine the source code, you’ll find three TODO comments indicating the methods you should fill in.
+
+Before you start, let’s walk through some of the code. Here are the instance variables and the constructor for MyLinkedList:
+
+```java
+	public class MyLinkedList<E> implements List<E> {
+
+		private int size; // keeps track of the number of elements
+		private Node head; // reference to the first node
+
+		public MyLinkedList() {
+		head = null;
+		size = 0;
+		}
+	}
+```
+
+&nbsp;
+&nbsp;
+
+この本のレポジットで,貴方は次の例に必要なソースファイルを探せます。
+
+- MyLinkedList.javaは,要素を保存するためのa linked listを使用するリストインタフェースの部分的実行を含みます。
+- MyLinkedListTest.javaは,MyLinkedListのためのJunittestsを含みます。
+
+いくつかのテストを含むMyArrayList.javaを実行してください。 何人かのメソッドは失敗するでしょう。あなたがソースコードを例にとれば,あなたは,三つのTODO commentsのある貴方が満たしなければならないメソッドを見つけます。
+
+詰め込む前に,コードの一部分を見てみましょう。 ここにMyLinkedListのインスタンス変数と生成者がいます。
+
+```java
+public class MyLinkedList<E> implements List<E> {
+
+	private int size; // 要素の数量を記します。
+	private Node head; //　初めのノードを参照します。
+
+	public MyLinkedList() {
+	head = null;
+	size = 0;
+	}
+}
+```
+
+---
+
+But if we store size explicitly, we can implement the size method in constant time; otherwise, we would have to traverse the list and count the elements, which requires linear time.
+
+Because we store size explicitly, we have to update it each time we add or remove an element, so that slows down those methods a little, but it doesn’t change their order of growth, so it’s probably worth it.
+
+The constructor sets head to null, which indicates an empty list, and sets size to 0.
+
+The type parameter also appears in the definition of Node, which is nested inside MyLinkedList:
+
+```java
+private class Node {
+		public E data;
+		public Node next;
+
+		public Node(E data, Node next) {
+			this.data = data;
+			this.next = next;
+		}
+	}
+```
+
+Finally, here’s my implementation of add:
+
+```java
+	public boolean add1(E element) {
+		if (head == null) {
+			head = new Node(element);
+		} else {
+			Node node = head;
+			// loop until the last node
+			for ( ; node.next != null ; node = node.next) {}
+			node.next = new Node(element);
+		}
+
+		return true;
+	}
+```
+
+This example demonstrates two patterns you’ll need for your solutions:
+
+1. For many methods, we have to handle the first element of the list as a special case. In this example, if we are adding the first element of a list, we have to modify head. Otherwise, we traverse the list, find the end, and add the new node.
+
+2. This method shows how to use a for loop to traverse the nodes in a list. In your solutions, you will probably write several variations on this loop. Notice that we have to declare node before the loop so we can access it after the loop.
+
+Now it’s your turn. Fill in the body of indexOf.
+In particular, notice how it’s supposed to handle null.
+
+I provide a helper method called equals and it handles null correctly.
+This method is private because it is used inside this class but it is not part of the List interface.
+
+Next, you should fill in the two-parameter version of add, which takes an index and stores the new value at the given index.
+
+Last one: fill in the body of remove.
+
+&nbsp;
+&nbsp;
+
+そして,彼らがサイズを明示的に保存するなら,私たちは,定数時間にサイズを実行することができます。
+その意味は,私たちは要求される線形時間に要素の個数を数えてリストを旋回しなければならないということです。
+
+大きさを明示的に保存するため,要素を追加したり除去するたびにアップデートしなければならないため,このような方法の速度は多少遅くなるが,入力手順は変更されないのでそれなりの価値があります。
+
+生成者はheadをnullに設定して空いているリストを示し、大きさを0に設定します。
+
+また,タイプ媒介変数はMyLinkedList内部に重畳されたNode定義に示されます。
+
+```java
+private class Node
+		public E data;
+		public Node next;
+
+		public Node(E data, Node next) {
+			this.data=data;
+			this.next=next;
+		}
+	}
+```
+
+最後に,次は著者のアドドメソッドである。
+
+```java
+	public boolean add1(E element){
+		if (head=null) {
+			head=new Node(element);
+		else
+			Node node = head;
+			//　最後のノードまで繰り返します。
+			for (; node.next!= null; node= node.next) {}
+			node.next=new Node(element);
+		}
+
+		return true;
+	}
+```
+
+一例として、ソリューションに必要な二つのパターンを見せます。
+
+1.多くのメソッドに対して、私は目録の最初の要素を特別ケースとして扱わなければならない。 この例では,リストの最初の要素を追加する場合は,head を修正する必要があります。 そうでなければ,リストを探索して終りを見出し,新しいノードを追加します。
+
+2.このメソッドはどうforループを使用してリストのノードを探索しているかを示してくれます。 ソリューションでこのループにさまざまな変数を作成することができます。 ループ前にノードを宣言するとループにアクセスできます。
+
+では,あなたの順番です。インデックスOfの本文を埋めてみてください。
+特にnullを処理する方法に注意してください。
+
+私はequalsというヘルパーメソッドを提供し,このメソドは正しくnullを処理します。
+このメソッドは,このクラスの内部で使われるため非公開ですが,リストインターフェースの一部ではありません。
+
+次に,索引をとり,与えられた索引に新しい値を保存するaddの二枚変数バージョンのメソッドを埋めなければなりません。
+
+最後:removeメソッドの胴体を満たしてください。
