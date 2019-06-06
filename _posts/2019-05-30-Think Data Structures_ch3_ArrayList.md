@@ -642,3 +642,81 @@ This is an example of what is sometimes called a performance bug: a program that
 belong to the order of growth we expected. In languages like Java that do a
 lot of work, like garbage collection, behind the scenes, this kind of bug can be
 hard to find.   
+
+```java
+@Override
+public void add(int index, E element) { // Solution code
+	// no need to check bounds; getNode does it.
+	if (index == 0) {
+		head = new Node(element, head);
+	} else {
+		Node node = getNode(index-1);
+		node.next = new Node(element, node.next);
+	}
+	size++;
+}
+
+public void add1(int index, E element) { // My code
+	if (index < 0 || index > size) {
+	} else {
+		size++;
+		Node node = head;
+		for ( ; index < size; index++) {
+			if (node.next != null) {
+				node.next = node;
+			}
+		}
+		node.next = new Node(element);
+	}
+}
+```          
+
+```java
+@Override
+public int indexOf(Object target) { // Solution code
+	Node node = head;
+	for (int i=0; i<size; i++) {
+		if (equals(target, node.data)) {
+			return i;
+		}
+		node = node.next;
+	}
+	return -1;
+}
+
+public int indexOf1(Object target) { // My code
+	Node node = head;
+	for (int i=0; i<size; i++) {
+		if (target.equals(node.data)) {
+			return i;
+		}
+	}
+	return -1;
+}
+```
+
+```java
+@Override
+public E remove(int index) { // Solution code
+	E element = get(index);
+	if (index == 0) {
+		head = head.next;
+	} else {
+		Node node = getNode(index-1);
+		node.next = node.next.next;
+	}
+	size--;
+	return element;
+}
+
+public E remove1(int index) { // My code
+	if (index == 0) {
+		head = head.next;
+	} else {
+		Node node = getNode(index);
+		node.data = null;
+	}
+	size--;
+	return null;
+}
+```
