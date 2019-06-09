@@ -5,11 +5,11 @@ date:   2019-06-07 21:25:28 +0900
 categories: [Java, Japanese, Algorithms, Data Structure]
 ---
 
-Chapter 4        
+*Chapter 4*        
 
-LinkedList        
+*LinkedList*        
 
-**4.1 Classifying MyLinkedList methods**       
+*4.1 Classifying MyLinkedList methods*       
 
 My implementation of indexOf is below. Read through it and see if you can identify its order of growth before you read the explanation.            
 
@@ -120,6 +120,73 @@ Finally, we decrement size and return the element we retrieved at the beginning.
 
 When people see two linear operations, they sometimes think the result is quadratic, but that only applies if one operation is nested inside the other. If you invoke one operation after the other, the run times add. If they are both in O(n), the sum is also in O(n).    
 
-**4.2 Comparing MyArrayList and MyLinkedList**    
+*4.2 Comparing MyArrayList and MyLinkedList*   
 
 The following table summarizes the differences between MyLinkedList and MyArrayList, where 1 means O(1) or constant time and n means O(n) or linear.    
+
+*4.3 Profiling*
+
+For the next exercise I provide a class called Profiler that contains code that runs a method with a range of problem sizes, measures run times, and plots the results.   
+
+You will use Profiler to classify the performance of the add method for the Java implementations of ArrayList and LinkedList.   
+
+Here’s an example that shows how to use the profiler:    
+
+```java
+	public static void profileArrayListAddEnd() {
+		Timeable timeable = new Timeable() {
+			List<String> list;
+
+			public void setup(int n) {
+				list = new ArrayList<String>();
+			}
+
+			public void timeMe(int n) {
+				for (int i=0; i<n; i++) {
+					list.add("a string");
+				}
+			}
+		};
+		int startN = 4000;
+		int endMillis = 1000;
+		runProfiler("ArrayList add end", timeable, startN, endMillis);
+	}
+```
+
+This method measures the time it takes to run **add** on an **ArrayList**, which adds the new element at the end. I’ll explain the code and then show the results.   
+
+In order to use **Profiler**, we need to create a **Timeable** object that provides two methods: **setup and timeMe**. The **setup** method does whatever needs to be done before we start the clock; in this case it creates an empty list. Then **timeMe** does whatever operation we are trying to measure; in this case it adds n elements to the list.   
+
+The code that creates **timeable** is an **anonymous class** that defines a new implementation of the **Timeable** interface and creates an instance of the new class at the same time.    
+
+The next step is to create the **Profiler** object, passing the **Timeable** object and a title as parameters.    
+
+The **Profiler** provides **timingLoop** which uses the **Timeable** object stored as an instance variable. It invokes the **timeMe** method on the **Timeable** object several times with a range of values of n. **timingLoop** takes two parameters:     
+
+- **startN** is the value of n the timing loop should start at.     
+
+- **endMillis** is a threshold in milliseconds. As **timingLoop** increases the problem size, the run time increases; when the run time exceeds this threshold, **timingLoop** stops.      
+
+This code is in ProfileListAdd.java, which you’ll run in the next exercise. When I ran it, I got this output:      
+
+		4000, 3       
+		8000, 0      
+		16000, 1      
+		32000, 2      
+		64000, 3
+		128000, 6      
+		256000, 18      
+		512000, 30      
+		1024000, 88      
+		2048000, 185            
+		4096000, 242      
+		8192000, 544      
+		16384000, 1325      
+
+The first column is problem size, n;       
+the second column is run time in milliseconds.       
+The first few measurements are pretty noisy; it might have been better to set startN around 64000.      
+
+The result from timingLoop is an XYSeries that contains this data. If you pass this series to plotResults, it generates a plot like the one in Figure 4.1.      
+
+The next section explains how to interpret it.      
