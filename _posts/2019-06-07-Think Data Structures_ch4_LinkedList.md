@@ -190,3 +190,265 @@ The first few measurements are pretty noisy; it might have been better to set st
 The result from timingLoop is an XYSeries that contains this data. If you pass this series to plotResults, it generates a plot like the one in Figure 4.1.      
 
 The next section explains how to interpret it.      
+
+4.4 Interpreting results        
+
+Based on our understanding of how ArrayList works, we expect the add method to take constant time when we add elements to the end. So the total time to add n elements should be linear.        
+
+To test that theory, we could plot total run time versus problem size, and we should see a straight line, at least for problem sizes that are big enough to measure accurately. Mathematically, we can write the function for that line:       
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_1.png "Screenshot broadcast")      
+
+Figure 4.1: Profiling results: run time versus problem size for adding n elements to the end of an **ArrayList**.       
+
+runtime = a + b^n       
+
+On the other hand, if **add** is linear, the total time for n adds would be quadratic. If we plot run time versus problem size, we expect to see a parabola. Or mathematically, something like:       
+
+runtime = a + bn + cn^2          
+
+With perfect data, we might be able to tell the difference between a straight line and a parabola, but if the measurements are noisy, it can be hard to tell. A better way to interpret noisy measurements is to plot run time and problem size on a **log-log** scale.   
+
+Why? Let’s suppose that run time is proportional to n k , but we don’t know what the exponent k is. We can write the relationship like this:        
+
+runtime = a + bn + . . . + cn^k       
+
+For large values of n, the term with the largest exponent is the most important, so:     
+
+runtime ≈ cn^k (最後次項)       
+
+where ≈ means “approximately equal”. Now, if we take the logarithm of both sides of this equation:      
+
+log(runtime) ≈ log(c) + k log(n)       
+
+This equation implies that if we plot runtime versus n on a log-log scale, we expect to see a straight line with intercept log(c) and slope k. We don’t care much about the intercept, but the slope indicates the order of growth: if k = 1, the algorithm is linear; if k = 2, it’s quadratic.      
+(切片についてはあまり気にしないですが、傾きは増加基準を指すため重要だ。)      
+
+Looking at the figure in the previous section, you can estimate the slope by eye. But when you call plotResults it computes a least squares fit to the data and prints the estimated slope. In this example:       
+(plotResultsメソッドは最小二乗法を使って当たる値を出力します。)       
+
+Estimated slope = 1.06194352346708     
+
+which is close to 1; and that suggests that the total time for n adds is linear, so each add is constant time, as expected.     
+
+One important point: if you see a straight line on a graph like this, that does not mean that the algorithm is linear. If the run time is proportional to n^k for any exponent k, we expect to see a straight line with slope k. If the slope is close to 1, that suggests the algorithm is linear. If it is close to 2, it’s probably quadratic.     
+(上のような形のグラフを見ても無条件に線形だとは言えない。    
+もし,実行時間はn^kで指数k に比例すれば,私たちは傾きk の直線グラフを予測することができる。)     
+
+*###4.5 Exercise 4*    
+
+In the repository for this book you’ll find the source files you need for this exercise:    
+
+1. Profiler.java contains the implementation of the Profiler class described above. You will use this class, but you don’t have to know how it works. But feel free to read the source.      
+
+2. ProfileListAdd.java contains starter code for this exercise, including the example, above, which profiles ArrayList.add. You will modify this file to profile a few other methods.      
+
+Run ant ProfileListAdd to run ProfileListAdd.java. You should get results similar to Figure 4.1, but you might have to adjust startN or endMillis. The estimated slope should be close to 1, indicating that performing n add operations takes time proportional to n raised to the exponent 1; that is, it is in O(n).      
+
+In ProfileListAdd.java, you’ll find an empty method named profileArrayListAddBeginning. Fill in the body of this method with code that tests ArrayList.add, always putting the new element at the beginning. If you start with a copy of profileArrayListAddEnd, you should only have to make a few changes. Add a line in main to invoke this method.      
+
+Run ant ProfileListAdd again and interpret the results. Based on our understanding of how ArrayList works, we expect each add operation to be linear, so the total time for n adds should be quadratic. If so, the estimated slope of the line, on a log-log scale, should be near 2. Is it?      
+
+Now let’s compare that to the performance of LinkedList. Fill in the body of profileLinkedListAddBeginning and use it to classify LinkedList.add when we put the new element at the beginning. What performance do you expect? Are the results consistent with your expectations?      
+
+Finally, fill in the body of profileLinkedListAddEnd and use it to classify LinkedList.add when we put the new element at the end. What performance do you expect? Are the results consistent with your expectations?      
+
+I’ll present results and answer these questions in the next chapter.      
+
+```java
+package ch4;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.jfree.data.xy.XYSeries;
+
+import ch4.Profiler.Timeable;
+
+public class ProfileListAdd {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		profileArrayListAddEnd();
+		//profileArrayListAddBeginning();
+		//profileLinkedListAddBeginning();
+		//profileLinkedListAddEnd();
+	}
+
+	/**
+	 * Characterize the run time of adding to the end of an ArrayList
+	 */
+	public static void profileArrayListAddEnd() {
+		Timeable timeable = new Timeable() {
+			List<String> list;
+
+			public void setup(int n) {
+				list = new ArrayList<String>();
+			}
+
+			public void timeMe(int n) {
+				for (int i=0; i<n; i++) {
+					list.add("a string");
+				}
+			}
+		};
+		int startN = 4000;
+		int endMillis = 1000;
+		runProfiler("ArrayList add end", timeable, startN, endMillis);
+	}
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_2.png "Screenshot broadcast")     
+
+&nbsp;
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_3.png "Screenshot broadcast")    
+
+
+
+
+	/**
+	 * Characterize the run time of adding to the beginning of an ArrayList
+	 */
+	public static void profileArrayListAddBeginning() { // Solution Code
+		Timeable timeable = new Timeable() {
+			List<String> list;
+
+			public void setup(int n) {
+				list = new ArrayList<String>();
+			}
+
+			public void timeMe(int n) {
+				for (int i=0; i<n; i++) {
+					list.add(0, "a string");
+				}
+			}
+		};
+		int startN = 4000;
+		int endMillis = 10000;
+		runProfiler("ArrayList add beginning", timeable, startN, endMillis);
+	}
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_4.png "Screenshot broadcast")   
+
+&nbsp;
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_5.png "Screenshot broadcast")   
+
+	/**
+	 * Characterize the run time of adding to the beginning of an ArrayList
+	 */
+	public static void profileArrayListAddBeginning1() { // My Code
+		Timeable timeable = new Timeable() {
+			List<String> list;
+
+			public void setup(int n) {
+				list = new ArrayList<String>();
+			}
+			/*
+			i = 0 add
+			i = 1 add
+			i = 2 add
+
+
+			i = 0 add
+			i = 0 add
+			i = 0 add
+			*/
+			public void timeMe(int n) {
+				int i = 0;
+				for (i = 0; i<n; i++) {
+					if (i == 0) {
+						list.add("a string");
+
+					}
+				}
+			}
+		};
+		int startN = 4000;
+		int endMillis = 1000;
+		runProfiler("ArrayList add end", timeable, startN, endMillis);
+	}
+
+
+
+
+	/**
+	 * Characterize the run time of adding to the beginning of a LinkedList
+	 */
+	public static void profileLinkedListAddBeginning() {
+
+		Timeable timeable = new Timeable() {
+			List<String> list;
+
+			public void setup(int n) {
+				list = new LinkedList<String>();
+			}
+
+			public void timeMe(int n) {
+				for (int i=0; i<n; i++) {
+					list.add(0, "a string");
+				}
+			}
+		};
+		int startN = 4000;
+		int endMillis = 1000;
+		runProfiler("LinkedList add beginning", timeable, startN, endMillis);
+
+	}
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_6.png "Screenshot broadcast")   
+
+&nbsp;
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_7.png "Screenshot broadcast")   
+
+
+
+
+	/**
+	 * Characterize the run time of adding to the end of a LinkedList
+	 */
+	public static void profileLinkedListAddEnd() {
+
+		Timeable timeable = new Timeable() {
+			List<String> list;
+
+			public void setup(int n) {
+				list = new LinkedList<String>();
+			}
+
+			public void timeMe(int n) {
+				for (int i=0; i<n; i++) {
+					list.add("a string");
+				}
+			}
+		};
+		int startN = 4000;
+		int endMillis = 1000;
+		runProfiler("LinkedList add beginning", timeable, startN, endMillis);
+
+	}
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_8.png "Screenshot broadcast")   
+
+&nbsp;
+
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_9.png "Screenshot broadcast")   
+
+	/**
+	 * Runs the profiles and displays results.
+	 *
+	 * @param timeable
+	 * @param startN
+	 * @param endMillis
+	 */
+	private static void runProfiler(String title, Timeable timeable, int startN, int endMillis) {
+		Profiler profiler = new Profiler(title, timeable);
+		XYSeries series = profiler.timingLoop(startN, endMillis);
+		profiler.plotResults(series);
+	}
+}
+```
