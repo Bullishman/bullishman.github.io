@@ -191,7 +191,7 @@ The result from timingLoop is an XYSeries that contains this data. If you pass t
 
 The next section explains how to interpret it.      
 
-4.4 Interpreting results        
+4.4 Interpreting results    
 
 Based on our understanding of how ArrayList works, we expect the add method to take constant time when we add elements to the end. So the total time to add n elements should be linear.        
 
@@ -235,7 +235,7 @@ One important point: if you see a straight line on a graph like this, that does 
 (上のような形のグラフを見ても無条件に線形だとは言えない。    
 もし,実行時間はn^kで指数k に比例すれば,私たちは傾きk の直線グラフを予測することができる。)     
 
-*###4.5 Exercise 4*    
+###4.5 Exercise 4      
 
 In the repository for this book you’ll find the source files you need for this exercise:    
 
@@ -256,28 +256,6 @@ Finally, fill in the body of profileLinkedListAddEnd and use it to classify Link
 I’ll present results and answer these questions in the next chapter.      
 
 ```java
-package ch4;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.jfree.data.xy.XYSeries;
-
-import ch4.Profiler.Timeable;
-
-public class ProfileListAdd {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		profileArrayListAddEnd();
-		//profileArrayListAddBeginning();
-		//profileLinkedListAddBeginning();
-		//profileLinkedListAddEnd();
-	}
-
 	/**
 	 * Characterize the run time of adding to the end of an ArrayList
 	 */
@@ -299,16 +277,13 @@ public class ProfileListAdd {
 		int endMillis = 1000;
 		runProfiler("ArrayList add end", timeable, startN, endMillis);
 	}
+```
 
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_2.png "Screenshot broadcast")     
-
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_2.png "Screenshot broadcast")      
 &nbsp;
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_3.png "Screenshot broadcast")      
 
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_3.png "Screenshot broadcast")    
-
-
-
-
+```java
 	/**
 	 * Characterize the run time of adding to the beginning of an ArrayList
 	 */
@@ -330,12 +305,6 @@ public class ProfileListAdd {
 		int endMillis = 10000;
 		runProfiler("ArrayList add beginning", timeable, startN, endMillis);
 	}
-
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_4.png "Screenshot broadcast")   
-
-&nbsp;
-
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_5.png "Screenshot broadcast")   
 
 	/**
 	 * Characterize the run time of adding to the beginning of an ArrayList
@@ -372,9 +341,12 @@ public class ProfileListAdd {
 		runProfiler("ArrayList add end", timeable, startN, endMillis);
 	}
 
+```
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_4.png "Screenshot broadcast")    
+&nbsp;
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_5.png "Screenshot broadcast")    
 
-
-
+```java
 	/**
 	 * Characterize the run time of adding to the beginning of a LinkedList
 	 */
@@ -398,16 +370,16 @@ public class ProfileListAdd {
 		runProfiler("LinkedList add beginning", timeable, startN, endMillis);
 
 	}
+```
 
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_6.png "Screenshot broadcast")   
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_6.png "Screenshot broadcast")    
 
 &nbsp;
 
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_7.png "Screenshot broadcast")   
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_7.png "Screenshot broadcast")    
 
 
-
-
+```java
 	/**
 	 * Characterize the run time of adding to the end of a LinkedList
 	 */
@@ -431,24 +403,9 @@ public class ProfileListAdd {
 		runProfiler("LinkedList add beginning", timeable, startN, endMillis);
 
 	}
-
+```
 ![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_8.png "Screenshot broadcast")   
 
 &nbsp;
 
 ![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_9.png "Screenshot broadcast")   
-
-	/**
-	 * Runs the profiles and displays results.
-	 *
-	 * @param timeable
-	 * @param startN
-	 * @param endMillis
-	 */
-	private static void runProfiler(String title, Timeable timeable, int startN, int endMillis) {
-		Profiler profiler = new Profiler(title, timeable);
-		XYSeries series = profiler.timingLoop(startN, endMillis);
-		profiler.plotResults(series);
-	}
-}
-```
