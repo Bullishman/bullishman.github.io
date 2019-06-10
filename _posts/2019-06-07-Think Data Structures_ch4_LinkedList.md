@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Think Data Structures_ch3_ArrayList"
+title:  "Think Data Structures_ch4_LinkedList"
 date:   2019-06-07 21:25:28 +0900
 categories: [Java, Japanese, Algorithms, Data Structure]
 ---
