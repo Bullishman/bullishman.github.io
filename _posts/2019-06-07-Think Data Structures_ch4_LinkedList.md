@@ -28,15 +28,25 @@ My implementation of indexOf is below. Read through it and see if you can identi
 	}
 ```        
 
+&nbsp;
+
 Initially node gets a copy of head, so they both refer to the same Node. The loop variable, i, counts from 0 to size-1. Each time through the loop, we use equals to see if we’ve found the target. If so, we return i immediately. Otherwise we advance to the next Node in the list.      
 
+&nbsp;
+
 Normally we would check to make sure the next Node is not null, but in this case it is safe because the loop ends when we get to the end of the list (assuming size is consistent with the actual number of nodes in the list).       
+
+&nbsp;
 
 1. Each time through the loop we invoke equals, which is constant time (it might depend on the size of target or data, but it doesn’t depend on the size of the list). The other operations in the loop are also constant time.      
 
 2. The loop might run n times, because in the worse case, we might have to traverse the whole list.      
 
+&nbsp;
+
 So the run time of this method is proportional to the length of the list.         
+
+&nbsp;
 
 Next, here is my implementation of the two-parameter add method. Again, you should try to classify it before you read the explanation.         
 
@@ -58,6 +68,9 @@ Next, here is my implementation of the two-parameter add method. Again, you shou
 	}
 ```         
 
+&nbsp;
+&nbsp;
+
 If index==0, we’re adding the new Node at the beginning, so we handle that as a special case. Otherwise, we have to traverse the list to find the element at index-1. We use the helper method getNode:        
 
 ```java
@@ -77,13 +90,19 @@ If index==0, we’re adding the new Node at the beginning, so we handle that as 
 	}
 ```       
 
+&nbsp;
+&nbsp;
+
 Jumping back to add, once we find the right Node, we create the new Node and put it between node and node.next. You might find it helpful to draw a diagram of this operation to make sure you understand it.         
 
 So, what’s the order of growth for add?       
 
-	1. getNode is similar to indexOf, and it is linear for the same reason.   
+1. getNode is similar to indexOf, and it is linear for the same reason.   
 
-	2. In add, everything before and after getNode is constant time.      
+2. In add, everything before and after getNode is constant time.      
+
+&nbsp;
+&nbsp;
 
 So all together, add is linear.       
 
@@ -111,24 +130,41 @@ Finally, let’s look at remove:
 	}
 ```       
 
+&nbsp;
+&nbsp;
+
 remove uses get to find and store the element at index. Then it removes the Node that containedit.          
+
+&nbsp;
 
 If index==0, we handle that as a special case again. Otherwise we find the node at index-1 and modify it to skip over node.next and link directly to node.next.next.    
 This effectively removes node.next from the list, and it can be garbage collected.   
 
+&nbsp;
+
 Finally, we decrement size and return the element we retrieved at the beginning.    
 
+&nbsp;
+
 When people see two linear operations, they sometimes think the result is quadratic, but that only applies if one operation is nested inside the other. If you invoke one operation after the other, the run times add. If they are both in O(n), the sum is also in O(n).    
+
+---
 
 *4.2 Comparing MyArrayList and MyLinkedList*   
 
 The following table summarizes the differences between MyLinkedList and MyArrayList, where 1 means O(1) or constant time and n means O(n) or linear.    
 
+---
+
 *4.3 Profiling*
 
 For the next exercise I provide a class called Profiler that contains code that runs a method with a range of problem sizes, measures run times, and plots the results.   
 
+&nbsp;
+
 You will use Profiler to classify the performance of the add method for the Java implementations of ArrayList and LinkedList.   
+
+&nbsp;
 
 Here’s an example that shows how to use the profiler:    
 
@@ -153,19 +189,36 @@ Here’s an example that shows how to use the profiler:
 	}
 ```
 
+&nbsp;
+&nbsp;
+
 This method measures the time it takes to run **add** on an **ArrayList**, which adds the new element at the end. I’ll explain the code and then show the results.   
+
+&nbsp;
 
 In order to use **Profiler**, we need to create a **Timeable** object that provides two methods: **setup and timeMe**. The **setup** method does whatever needs to be done before we start the clock; in this case it creates an empty list. Then **timeMe** does whatever operation we are trying to measure; in this case it adds n elements to the list.   
 
+&nbsp;
+
 The code that creates **timeable** is an **anonymous class** that defines a new implementation of the **Timeable** interface and creates an instance of the new class at the same time.    
+
+&nbsp;
 
 The next step is to create the **Profiler** object, passing the **Timeable** object and a title as parameters.    
 
+&nbsp;
+
 The **Profiler** provides **timingLoop** which uses the **Timeable** object stored as an instance variable. It invokes the **timeMe** method on the **Timeable** object several times with a range of values of n. **timingLoop** takes two parameters:     
+
+&nbsp;
 
 - **startN** is the value of n the timing loop should start at.     
 
+&nbsp;
+
 - **endMillis** is a threshold in milliseconds. As **timingLoop** increases the problem size, the run time increases; when the run time exceeds this threshold, **timingLoop** stops.      
+
+&nbsp;
 
 This code is in ProfileListAdd.java, which you’ll run in the next exercise. When I ran it, I got this output:      
 
@@ -187,13 +240,21 @@ The first column is problem size, n;
 the second column is run time in milliseconds.       
 The first few measurements are pretty noisy; it might have been better to set startN around 64000.      
 
+&nbsp;
+
 The result from timingLoop is an XYSeries that contains this data. If you pass this series to plotResults, it generates a plot like the one in Figure 4.1.      
+
+&nbsp;
 
 The next section explains how to interpret it.      
 
-4.4 Interpreting results    
+---
+
+###4.4 Interpreting results    
 
 Based on our understanding of how ArrayList works, we expect the add method to take constant time when we add elements to the end. So the total time to add n elements should be linear.        
+
+&nbsp;
 
 To test that theory, we could plot total run time versus problem size, and we should see a straight line, at least for problem sizes that are big enough to measure accurately. Mathematically, we can write the function for that line:       
 
@@ -203,9 +264,13 @@ Figure 4.1: Profiling results: run time versus problem size for adding n element
 
 runtime = a + b^n       
 
+&nbsp;
+
 On the other hand, if **add** is linear, the total time for n adds would be quadratic. If we plot run time versus problem size, we expect to see a parabola. Or mathematically, something like:       
 
 runtime = a + bn + cn^2          
+
+&nbsp;
 
 With perfect data, we might be able to tell the difference between a straight line and a parabola, but if the measurements are noisy, it can be hard to tell. A better way to interpret noisy measurements is to plot run time and problem size on a **log-log** scale.   
 
@@ -213,16 +278,24 @@ Why? Let’s suppose that run time is proportional to n k , but we don’t know 
 
 runtime = a + bn + . . . + cn^k       
 
+&nbsp;
+
 For large values of n, the term with the largest exponent is the most important, so:     
 
 runtime ≈ cn^k (最後次項)       
+
+&nbsp;
 
 where ≈ means “approximately equal”. Now, if we take the logarithm of both sides of this equation:      
 
 log(runtime) ≈ log(c) + k log(n)       
 
+&nbsp;
+
 This equation implies that if we plot runtime versus n on a log-log scale, we expect to see a straight line with intercept log(c) and slope k. We don’t care much about the intercept, but the slope indicates the order of growth: if k = 1, the algorithm is linear; if k = 2, it’s quadratic.      
 (切片についてはあまり気にしないですが、傾きは増加基準を指すため重要だ。)      
+
+&nbsp;
 
 Looking at the figure in the previous section, you can estimate the slope by eye. But when you call plotResults it computes a least squares fit to the data and prints the estimated slope. In this example:       
 (plotResultsメソッドは最小二乗法を使って当たる値を出力します。)       
@@ -231,27 +304,45 @@ Estimated slope = 1.06194352346708
 
 which is close to 1; and that suggests that the total time for n adds is linear, so each add is constant time, as expected.     
 
+&nbsp;
+
 One important point: if you see a straight line on a graph like this, that does not mean that the algorithm is linear. If the run time is proportional to n^k for any exponent k, we expect to see a straight line with slope k. If the slope is close to 1, that suggests the algorithm is linear. If it is close to 2, it’s probably quadratic.     
 (上のような形のグラフを見ても無条件に線形だとは言えない。    
 もし,実行時間はn^kで指数k に比例すれば,私たちは傾きk の直線グラフを予測することができる。)     
+
+---
 
 ###4.5 Exercise 4      
 
 In the repository for this book you’ll find the source files you need for this exercise:    
 
+&nbsp;
+
 1. Profiler.java contains the implementation of the Profiler class described above. You will use this class, but you don’t have to know how it works. But feel free to read the source.      
 
 2. ProfileListAdd.java contains starter code for this exercise, including the example, above, which profiles ArrayList.add. You will modify this file to profile a few other methods.      
 
+&nbsp;
+
 Run ant ProfileListAdd to run ProfileListAdd.java. You should get results similar to Figure 4.1, but you might have to adjust startN or endMillis. The estimated slope should be close to 1, indicating that performing n add operations takes time proportional to n raised to the exponent 1; that is, it is in O(n).      
+
+&nbsp;
 
 In ProfileListAdd.java, you’ll find an empty method named profileArrayListAddBeginning. Fill in the body of this method with code that tests ArrayList.add, always putting the new element at the beginning. If you start with a copy of profileArrayListAddEnd, you should only have to make a few changes. Add a line in main to invoke this method.      
 
+&nbsp;
+
 Run ant ProfileListAdd again and interpret the results. Based on our understanding of how ArrayList works, we expect each add operation to be linear, so the total time for n adds should be quadratic. If so, the estimated slope of the line, on a log-log scale, should be near 2. Is it?      
+
+&nbsp;
 
 Now let’s compare that to the performance of LinkedList. Fill in the body of profileLinkedListAddBeginning and use it to classify LinkedList.add when we put the new element at the beginning. What performance do you expect? Are the results consistent with your expectations?      
 
+&nbsp;
+
 Finally, fill in the body of profileLinkedListAddEnd and use it to classify LinkedList.add when we put the new element at the end. What performance do you expect? Are the results consistent with your expectations?      
+
+&nbsp;
 
 I’ll present results and answer these questions in the next chapter.      
 
@@ -281,7 +372,11 @@ I’ll present results and answer these questions in the next chapter.
 
 ![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_2.png "Screenshot broadcast")      
 &nbsp;
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_3.png "Screenshot broadcast")      
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_3.png "Screenshot broadcast")  
+
+&nbsp;
+&nbsp;
+&nbsp;    
 
 ```java
 	/**
@@ -342,9 +437,13 @@ I’ll present results and answer these questions in the next chapter.
 	}
 
 ```
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_4.png "Screenshot broadcast")    
-&nbsp;
 ![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_5.png "Screenshot broadcast")    
+&nbsp;
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_4.png "Screenshot broadcast")    
+
+&nbsp;
+&nbsp;
+&nbsp;
 
 ```java
 	/**
@@ -374,9 +473,11 @@ I’ll present results and answer these questions in the next chapter.
 
 ![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_6.png "Screenshot broadcast")    
 
-&nbsp;
-
 ![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_7.png "Screenshot broadcast")    
+
+&nbsp;
+&nbsp;
+&nbsp;
 
 
 ```java
@@ -406,6 +507,189 @@ I’ll present results and answer these questions in the next chapter.
 ```
 ![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_8.png "Screenshot broadcast")   
 
+![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_9.png "Screenshot broadcast")   
+
+&nbsp;
+&nbsp;
 &nbsp;
 
-![Screenshot broadcast](https://raw.githubusercontent.com/Bullishman/bullishman.github.io/master/static/img/_posts/Think%20Data%20Structures/ch4_9.png "Screenshot broadcast")   
+```java
+package ch4;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+
+import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogarithmicAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
+
+import java.awt.Color;
+
+import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogarithmicAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
+
+/**
+ * @author downey
+ *
+ */
+public class Profiler extends ApplicationFrame {
+
+	/**
+	 * This is here because extending ApplicationFrame requires it.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Timeable defines the methods an object must provide to work with Profiler
+	 *
+	 */
+	public interface Timeable {
+		/*
+		 * setup is invoked before the clock starts.
+		 */
+		public void setup(int n);
+
+		/*
+		 * timeMe does whatever operation we are timing.
+		 */
+		public void timeMe(int n);
+	}
+
+	private Timeable timeable;
+
+	public Profiler(String title, Timeable timeable) {
+		super(title);
+		this.timeable = timeable;
+	}
+
+	/**
+	 * Invokes timeIt with a range of `n` from `startN` until runtime exceeds `endMillis`.
+	 *
+	 * @param data.timeable
+	 * @param n
+	 * @return
+	 */
+	public XYSeries timingLoop(int startN, int endMillis) {
+        final XYSeries series = new XYSeries("Time (ms)");
+
+		int n = startN;
+		for (int i=0; i<20; i++) {
+			// run it once to warm up
+			timeIt(n);
+
+			// then start timing
+			long total = 0;
+
+			// run 10 times and add up total runtime
+			for (int j=0; j<10; j++) {
+				total += timeIt(n);
+			}
+			System.out.println(n + ", " + total);
+
+			// don't store data until we get to 4ms
+			if (total > 4) {
+				series.add(n, total);
+			}
+
+			// stop when the runtime exceeds the end threshold
+			if (total > endMillis) {
+				break;
+			}
+			// otherwise double the size and continue
+			n *= 2;
+		}
+		return series;
+	}
+
+	/**
+	 * Invokes setup and timeMe on the embedded Timeable.
+	 *
+	 * @param n
+	 * @return
+	 */
+	public long timeIt(int n) {
+		timeable.setup(n);
+		final long startTime = System.currentTimeMillis();
+		timeable.timeMe(n);
+		final long endTime = System.currentTimeMillis();
+		return endTime - startTime;
+	}
+
+	/**
+	 * Plots the results.
+	 *
+	 * @param series
+	 */
+	public void plotResults(XYSeries series) {
+		double slope = estimateSlope(series);
+		System.out.println("Estimated slope= " + slope);
+
+		final XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+
+        final JFreeChart chart = ChartFactory.createXYLineChart(
+            "",          // chart title
+            "",               // domain axis label
+            "",                  // range axis label
+            dataset,                  // data
+            PlotOrientation.VERTICAL,
+            false,                     // include legend
+            true,
+            false
+        );
+
+        final XYPlot plot = chart.getXYPlot();
+        final NumberAxis domainAxis = new LogarithmicAxis("Problem size (n)");
+        final NumberAxis rangeAxis = new LogarithmicAxis("Runtime (ms)");
+        plot.setDomainAxis(domainAxis);
+        plot.setRangeAxis(rangeAxis);
+        chart.setBackgroundPaint(Color.white);
+        plot.setOutlinePaint(Color.black);
+        final ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new java.awt.Dimension(1000, 600));
+        setContentPane(chartPanel);
+        pack();
+        RefineryUtilities.centerFrameOnScreen(this);
+        setVisible(true);
+	}
+
+	/**
+	 * Uses simple regression to estimate the slope of the series.
+	 *
+	 * @param series
+	 * @return
+	 */
+	public double estimateSlope(XYSeries series) {
+		SimpleRegression regression = new SimpleRegression();
+
+		for (Object item: series.getItems()) {
+			XYDataItem xy = (XYDataItem) item;
+			regression.addData(Math.log(xy.getXValue()), Math.log(xy.getYValue()));
+		}
+		return regression.getSlope();
+	}
+}
+```
