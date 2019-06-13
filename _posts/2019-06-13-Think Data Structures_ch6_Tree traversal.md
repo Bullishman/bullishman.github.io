@@ -12,8 +12,9 @@ Tree traversal
 This chapter introduces the application we will develop during the rest of the book, a web search engine. I describe the elements of a search engine and introduce the first application, a Web crawler that downloads and parses pages from Wikipedia. This chapter also presents a recursive implementation of depth-first search and an iterative implementation that uses a Java Deque to implement a “last in, first out” stack.    
 
 &nbsp;
----
 &nbsp;
+
+---
 
 6.1 Search engines    
 
@@ -52,8 +53,9 @@ Testing the conjecture will allow us to build the basic pieces of a crawler with
 In a few chapters, we’ll work on the indexer, and then we’ll get to the retriever.    
 
 &nbsp;
----
 &nbsp;
+
+---
 
 6.2 Parsing HTML    
 
@@ -97,33 +99,12 @@ Figure 6.2: Screenshot of the Chrome DOM Inspector.
 Figure 6.2 shows a screenshot of the DOM for the Wikipedia page on Java, http://thinkdast.com/java. The element that’s highlighted is the first paragraph of the main text of the article, which is contained in a <div> element with id="mw-content-text". We’ll use this element id to identify the main text of each article we download.    
 
 &nbsp;
----
 &nbsp;
+
+---
 
 6.3 Using jsoup    
 
-&nbsp;
-
-jsoup makes it easy to download and parse web pages, and to navigate the DOM tree. Here’s an example:    
-
-String url = "http://en.wikipedia.org/wiki/Java_(programming_language)";    
-
-//1.Jsoup.connect()はウェブサーバとのつながりを作ってStringの形のURLを取得します。    
-//2.get()メソッドはHTMLをダウンロードして文章をプログラミング文法的に分析します、そしてDOMを提供してDocumentオブジェクトに返します。    
-
-// download and parse the document    
-Connection conn = Jsoup.connect(url);     
-Document doc = conn.get();    
-
-//3.getElementByIdはStringを持ってきてtreeの形態であるidフィールド確認機能を持ったelementを探索します。 そして,ウィキペディアページを確認するために<div id='mw-content-text' lang>を選択します。
-また,getElementByIdのリターン値は<div>を表し<div>の子孫と子孫の孫は...を含んだElement オブジェクトです。    
-//4.selectはStringを持ってきて、treeを探索します、そしてStringとマッチするすべてのelements with tagsを返還します。 この場合, <p> タグの表わすcontentのすべてのparagraph tagsを返却します。    
-
-// select the content text and pull out the paragraphs.     
-Element content = doc.getElementById("mw-content-text");     
-Elements paragraphs = content.select("p");     
-
-&nbsp;
 &nbsp;
 
 ```java
@@ -154,11 +135,12 @@ public class Crawler {
 
 	public void GetHomePage() throws Exception {
 		String url = "http://en.wikipedia.org/wiki/Java_(programming_language)";
-		org.jsoup.Connection conn = Jsoup.connect(url);
-		Document doc = conn.get();
+		org.jsoup.Connection conn = Jsoup.connect(url); //1.Jsoup.connect()はウェブサーバとのつながりを作ってStringの形のURLを取得します。    
+		Document doc = conn.get(); //2.get()メソッドはHTMLをダウンロードして文章をプログラミング文法的に分析します、そしてDOMを提供してDocumentオブジェクトに返します。
+
 		// select the content text and pull out the paragraphs.
-		Element content = doc.getElementById("mw-content-text");
-		Elements paragraphs = content.select("p");
+		Element content = doc.getElementById("mw-content-text"); //3.getElementByIdはStringを持ってきてtreeの形態であるidフィールド確認機能を持ったelementを探索します。 そして,ウィキペディアページを確認するために<div id='mw-content-text' lang>を選択します。また,getElementByIdのリターン値は<div>を表し<div>の子孫と子孫の孫は...を含んだElement オブジェクトです。    
+		Elements paragraphs = content.select("p"); //4.selectはStringを持ってきて、treeを探索します、そしてStringとマッチするすべてのelements with tagsを返還します。 この場合, <p> タグの表わすcontentのすべてのparagraph tagsを返却します。
 		System.out.println(paragraphs);
 	}
 }
