@@ -352,14 +352,14 @@ There are several ways you might reasonably traverse a tree, each with different
 There are two common ways to implement DFS, recursively and iteratively. The recursive implementation is simple and elegant:      
 
 ```java
-	private static void recursiveDFS(Node node) {
-		if (node instanceof TextNode) {
-			System.out.print(node);
-		}
-		for (Node child : node.childNodes()) {
-			recursiveDFS(child);
-		}
+private static void recursiveDFS(Node node) {
+	if (node instanceof TextNode) {
+		System.out.print(node);
 	}
+	for (Node child : node.childNodes()) {
+		recursiveDFS(child);
+	}
+}
 ```
 
 &nbsp;
