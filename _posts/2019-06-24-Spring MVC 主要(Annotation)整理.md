@@ -12,13 +12,24 @@ categories: [Spring, Japanese]
 
 &nbsp;
 
-```java
+```spring
 @RequestMapping(value = "/getList", method = {RequestMethod.POST})
+// @PostMapping("/getList")に単純化できます。　
 ```
-特定URIにマッチングされたクラスやメソッドであることを明示するエノテイション	(クラス、メソッド)       
-@PostMapping("/getList")に単純化できます。　　　　　
+特定URIにマッチングされたクラスやメソッドであることを明示するエノテイション	(クラス、メソッド)       　　　　
 
-@RequestParam	要請(request)で特定のパラメータ値を見出すときに使用するエノテイション	パラメータ
+&nbsp;
+
+```spring
+@RequestParam	// 要請(request)で特定のパラメータ値を見出すときに使用するエノテイション	パラメータ
+
+private ModelAndView request_TEST(@RequestParam("test") int num,
+@RequestParam("test2") String str)){
+        // 上記のように一つ以上のタイプが適用できます。 スプリングからサポートする変換器からサポートされるすべてのタイプを変換可能です。
+        // RequestParamは一つ以上パラメータにおいて使用可能です。
+    }
+```
+
 @RequestHeader	要請(request)で特定HTTPヘッダ情報を抽出する際に使用	パラメータ
 @PathVariable	現在のURIで希望する情報を抽出する際に使うエノテイション	パラメータ
 @CookieValue	現在のユーザーのクッキーが存在する場合、クッキーの名前を利用してクッキーの値を抽出	パラメータ
